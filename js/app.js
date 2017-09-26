@@ -59,11 +59,9 @@ Player.prototype.update = function(dt) {
    } else if (this.x > 400) {
        this.x = 400;
    } else if (this.y === 0) {
-       // this.y = 400;
        this.reset();
    } else if (this.y > 400){
        this.y = 400;
-       // this.reset();
    } else if (this.y < 0) {
        this.y = 0;
    }
@@ -144,6 +142,7 @@ var checkCollisions = function(){
       if (allEnemies[i].x < player.x + 25 && allEnemies[i].x + 50 > player.x &&
          allEnemies[i].y < player.y + 50 && 25 + allEnemies[i].y > player.y) {
           // collision detected!
+          // reset the player
           player.reset();
       }
   }
