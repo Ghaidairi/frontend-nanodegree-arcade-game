@@ -18,6 +18,8 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+
+    // manage the enemy so if it is not on the screen it will enter again from left
     if(this.x > 505){
       this.x = -101;
     }
@@ -37,55 +39,67 @@ var Player = function(x, y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
-    // The image/sprite for our enemies, this uses
+    // The image/sprite for player, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/char-boy.png';
     this.x = 200;
     this.y = 390;
 };
 
-// Update the enemy's position, required method for game
+// Update the player's position, required method for game
 // Parameter: dt, a time delta between ticks
 Player.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
-    // ****all computers.
+    // all computers.
+
+    // control player's movement to outside screen and resetting it if won
     if (this.x < 0) {
        this.x = 0;
    } else if (this.x > 400) {
        this.x = 400;
-   } else if ((this.y === 0) || (this.y > 400)){
+   } else if (this.y === 0) {
+       // this.y = 400;
+       this.reset();
+   } else if (this.y > 400){
        this.y = 400;
+       // this.reset();
    } else if (this.y < 0) {
        this.y = 0;
    }
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the player on the screen, required method for game
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// handle player key movements
 Player.prototype.handleInput = function(movement) {
   switch (movement) {
         case 'left':
-            this.x = this.x - 100;
+            this.x = this.x - 101;
             console.log("left");
             break;
         case 'up':
-            this.y = this.y - 85;
+            this.y = this.y - 83;
             console.log("up");
             break;
         case 'right':
-            this.x = this.x + 100;
+            this.x = this.x + 101;
             console.log("right");
             break;
         case 'down':
-            this.y = this.y + 85;
+            this.y = this.y + 83;
             console.log("down");
             break;
     }
 };
+
+Player.prototype.reset = function(){
+  this.x = 200;
+  this.y = 390;
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -96,6 +110,7 @@ var allEnemies = [
 ];
 // Place the player object in a variable called player
 var player = new Player();
+
 
 
 
@@ -112,25 +127,24 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-// define function to hold two rectangles that represent player and enemy position
-var Rectangle = function (left, top, width, height) {
-	this.left = left;
-	this.top = top;
-	this.right = this.left + width;
-	this.bottom = this.top + height;
-	this.width = width;
-	this.height = height;
-};
+// define function to hold two rectangles that represent player and enemy positions
+// var Rectangle = function (left, top, width, height) {
+// 	this.left = left;
+// 	this.top = top;
+// 	this.right = this.left + width;
+// 	this.bottom = this.top + height;
+// 	this.width = width;
+// 	this.height = height;
+// };
 
-// place the player-enemy colision checking in an object checkCollisions
+// place the player-enemy collision checking function in an object checkCollisions
 var checkCollisions = function(){
   for (i=0; i < allEnemies.length; i++) {
-      if (this.x === allEnemies[i].x && this.y === allEnemies[i].y) {
-          player.x = 200;
-          player.y = 390;
-          return true;
-      }else{
-        return false;
+      // check if rectangles dimentions collied
+      if (allEnemies[i].x < player.x + 25 && allEnemies[i].x + 50 > player.x &&
+         allEnemies[i].y < player.y + 50 && 25 + allEnemies[i].y > player.y) {
+          // collision detected!
+          player.reset();
       }
   }
 };
